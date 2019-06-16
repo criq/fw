@@ -22,17 +22,17 @@ class ErrorHandler {
 		ini_set('display_errors', false);
 		ini_set('error_log', ERROR_LOG);
 
-		set_error_handler(function ($message, $level = 0, $file = null, $line = null) {
-			throw new \ErrorException($message, 0, $level, $file, $line);
-		});
-
 		set_exception_handler(function ($exception) {
 			static::handle($exception);
 
 			return true;
 		});
 
-		register_shutdown_function(function () {
+		set_error_handler(function ($message, $level = 0, $file = null, $line = null) {
+			throw new \ErrorException($message, 0, $level, $file, $line);
+		});
+
+		register_shutdown_function(function() {
 			$error = error_get_last();
 			if ($error) {
 				throw new \ErrorException($error['message'], 0, $error['type'], $error['file'], $error['line']);
@@ -66,21 +66,13 @@ class ErrorHandler {
 		$controllerClass = \Katu\App::getControllerClass();
 
 		try {
-
 			throw $e;
-
 		} catch (Exceptions\NotFoundException $e) {
-
 			$controllerClass::renderNotFound();
-
 		} catch (Exceptions\UnauthorizedException $e) {
-
 			$controllerClass::renderUnauthorized();
-
 		} catch (Exceptions\UserErrorException $e) {
-
 			$controllerClass::renderError($e->getMessage());
-
 		}
 	}
 

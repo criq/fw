@@ -16,6 +16,12 @@ class TColor {
 		}
 	}
 
+	public function __get($name) {
+		$result = $this->color->$name;
+
+		return $result;
+	}
+
 	public function __call($name, $arguments) {
 		$result = call_user_func_array([$this->color, $name], $arguments);
 		if ($result instanceof \MischiefCollective\ColorJizz\ColorJizz) {

@@ -74,4 +74,10 @@ class TString {
 		return new static(str_replace("\xc2\xa0", "\x20", $this));
 	}
 
+	public function ucfirst() {
+		$fc = mb_strtoupper(mb_substr($this->string, 0, 1));
+
+		return $fc . mb_substr($this->string, 1);
+	}
+
 }

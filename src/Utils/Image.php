@@ -4,7 +4,7 @@ namespace Katu\Utils;
 
 class Image {
 
-	const THUMBNAIL_DIR = 'image/versions';
+	const VERSION_DIR = 'image/versions';
 
 	static function getValidSource($source) {
 		if ($source instanceof \App\Models\File) {
@@ -203,7 +203,7 @@ class Image {
 
 	static function getVersionFile($uri, $version) {
 		$versionFilename = self::getVersionFilename($uri, $version);
-		$thumbnailPath = new \Katu\Utils\File(\Katu\Utils\FileSystem::joinPaths(static::getDirPath(), static::THUMBNAIL_DIR, $version, substr($versionFilename, 0, 2), substr($versionFilename, 2, 2), $versionFilename));
+		$thumbnailPath = new \Katu\Utils\File(\Katu\Utils\FileSystem::joinPaths(static::getDirPath(), static::VERSION_DIR, $version, substr($versionFilename, 0, 2), substr($versionFilename, 2, 2), $versionFilename));
 
 		try {
 			static::makeVersion($uri, $thumbnailPath, $version);

@@ -27,19 +27,23 @@ class Formatter {
 		return $numberFormatter->format($number);
 	}
 
-	static function getLocalReadableNumber($locale, $number) {
+	static function getLocalReadableNumber($locale, $number, $digits = null) {
 		$numberFormatter = new \NumberFormatter(static::getPreferredLocale($locale), \NumberFormatter::DECIMAL);
-		$numberFormatter->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 3);
 		$numberFormatter->setAttribute(\NumberFormatter::DECIMAL_ALWAYS_SHOWN, false);
 
-		if ($number >= 1) {
-			$numberFormatter->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 2);
-		}
-		if ($number >= 10) {
-			$numberFormatter->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 1);
-		}
-		if ($number >= 100) {
-			$numberFormatter->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 0);
+		if ($digits !== null) {
+			$numberFormatter->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, $digits);
+		} else {
+			$numberFormatter->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 3);
+			if ($number >= 1) {
+				$numberFormatter->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 2);
+			}
+			if ($number >= 10) {
+				$numberFormatter->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 1);
+			}
+			if ($number >= 100) {
+				$numberFormatter->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 0);
+			}
 		}
 
 		return $numberFormatter->format($number);

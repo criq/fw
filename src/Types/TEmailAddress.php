@@ -7,7 +7,7 @@ class TEmailAddress {
 	public $value;
 
 	public function __construct($value) {
-		if (!self::isValid($value)) {
+		if (!static::isValid($value)) {
 			throw new \Katu\Exceptions\InputErrorException("Invalid e-mail address.");
 		}
 
@@ -15,13 +15,16 @@ class TEmailAddress {
 	}
 
 	public function __toString() {
-		return (string) $this->value;
+		return (string)$this->value;
 	}
 
 	static function isValid($value) {
-		$validator = new \Egulias\EmailValidator\EmailValidator();
+		$validator = new \Egulias\EmailValidator\EmailValidator;
+		$multipleValidations = new \Egulias\EmailValidator\Validation\MultipleValidationWithAnd([
+				new \Egulias\EmailValidator\Validation\RFCValidation,
+		]);
 
-		return $validator->isValid($value);
+		return $validator->isValid($value, $multipleValidations);
 	}
 
 }

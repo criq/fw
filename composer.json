@@ -15,7 +15,7 @@
 		"jwage/easy-csv": "0.0.2",
 		"mustangostang/spyc": "@stable",
 		"ircmaxell/random-lib": "1.*",
-		"egulias/email-validator": "1.*",
+		"egulias/email-validator": "2.*",
 		"swiftmailer/swiftmailer": "5.*",
 		"michelf/php-markdown": "1.*",
 		"intervention/image": "2.*",

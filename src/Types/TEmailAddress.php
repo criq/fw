@@ -19,12 +19,22 @@ class TEmailAddress {
 	}
 
 	static function isValid($value) {
-		$validator = new \Egulias\EmailValidator\EmailValidator;
-		$multipleValidations = new \Egulias\EmailValidator\Validation\MultipleValidationWithAnd([
-				new \Egulias\EmailValidator\Validation\RFCValidation,
-		]);
+		if (preg_match('/^2/', \Katu\Utils\Composer::getVersion('egulias/email-validator'))) {
 
-		return $validator->isValid($value, $multipleValidations);
+			$validator = new \Egulias\EmailValidator\EmailValidator;
+			$multipleValidations = new \Egulias\EmailValidator\Validation\MultipleValidationWithAnd([
+					new \Egulias\EmailValidator\Validation\RFCValidation,
+			]);
+
+			return $validator->isValid($value, $multipleValidations);
+
+		} else {
+
+			$validator = new \Egulias\EmailValidator\EmailValidator;
+
+			return $validator->isValid($value);
+
+		}
 	}
 
 }

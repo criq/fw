@@ -26,4 +26,24 @@ class Composer {
 		return realpath(FileSystem::joinPaths(BASE_DIR, 'vendor'));
 	}
 
+	static function getInstalledJSON() {
+		$file = new \Katu\Utils\File(static::getDir(), 'composer', 'installed.json');
+
+		return \Katu\Utils\JSON::decodeAsArray($file->get());
+	}
+
+	static function getPackageInfo($packageName) {
+		$packages = array_filter(static::getInstalledJSON(), function($i) use($packageName) {
+			return $i['name'] == $packageName;
+		});
+
+		return array_values($packages)[0] ?? null;
+	}
+
+	static function getVersion($packageName) {
+		$packageInfo = static::getPackageInfo($packageName);
+
+		return $packageInfo['version_normalized'] ?? null;
+	}
+
 }

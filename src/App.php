@@ -142,12 +142,16 @@ class App {
 		// Redirect to canonical host.
 		try {
 			if ($app->request->getMethod() == 'GET' && Config::get('app', 'redirectToCanonicalHost')) {
+
 				$currentUrl = Utils\Url::getCurrent();
 				$currentHost = $currentUrl->getHost();
+				$currentScheme = $currentUrl->getScheme();
+
 				$canonicalUrl = new Types\TUrl(Config::get('app', 'baseUrl'));
 				$canonicalHost = $canonicalUrl->getHost();
+				$canonicalScheme = $canonicalUrl->getScheme();
 
-				if ($currentHost != $canonicalHost) {
+				if ($currentHost != $canonicalHost || $currentScheme != $canonicalScheme) {
 					$canonicalParts = $currentUrl->getParts();
 					$canonicalParts['host'] = $canonicalHost;
 

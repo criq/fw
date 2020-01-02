@@ -3,7 +3,6 @@
 	"description": "katu framework",
 	"type": "library",
 	"require" : {
-		"composer/composer": "@stable",
 		"egulias/email-validator": "@stable",
 		"facebook/graph-sdk" : "@stable",
 		"flynsarmy/slim-monolog": "@stable",

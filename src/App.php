@@ -153,8 +153,8 @@ class App {
 
 				if ($currentHost != $canonicalHost || $currentScheme != $canonicalScheme) {
 					$canonicalParts = $currentUrl->getParts();
+					$canonicalParts['scheme'] = $canonicalScheme;
 					$canonicalParts['host'] = $canonicalHost;
-
 					$redirectUrl = Types\TUrl::build($canonicalParts);
 
 					return header('Location: ' . (string) $redirectUrl, 301); die;

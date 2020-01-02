@@ -47,7 +47,11 @@ class Composer {
 	static function getVersion($packageName) {
 		$packageInfo = static::getPackageInfo($packageName);
 
-		return $packageInfo['version_normalized'] ?? null;
+		if (isset($packageInfo['version_normalized'])) {
+			return $packageInfo['version_normalized'];
+		}
+
+		return null;
 	}
 
 }

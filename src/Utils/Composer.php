@@ -33,11 +33,15 @@ class Composer {
 	}
 
 	static function getPackageInfo($packageName) {
-		$packages = array_filter(static::getInstalledJSON(), function($i) use($packageName) {
+		$packages = array_values(array_filter(static::getInstalledJSON(), function($i) use($packageName) {
 			return $i['name'] == $packageName;
-		});
+		}));
 
-		return array_values($packages)[0] ?? null;
+		if (isset($packages[0])) {
+			return $packages[0];
+		}
+
+		return null;
 	}
 
 	static function getVersion($packageName) {

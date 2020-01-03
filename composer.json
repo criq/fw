@@ -12,7 +12,7 @@
 		"intervention/image": "2.*",
 		"ircmaxell/random-lib": "1.*",
 		"jabli/amiko": "0.1.*",
-		"jabli/sexy": "0.4.*",
+		"jabli/sexy": "@stable",
 		"jbroadway/urlify": "1.0.*@dev",
 		"jenssegers/agent": "@stable",
 		"jwage/easy-csv": "0.0.2",

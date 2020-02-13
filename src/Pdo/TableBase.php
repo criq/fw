@@ -68,7 +68,7 @@ class TableBase extends \Sexy\Expression {
 	}
 
 	public function rename($name) {
-		$sql = " RENAME TABLE " . $this->name . " TO " . $name;
+		$sql = " RENAME TABLE " . $this->name->name . " TO " . $name;
 		$res = $this->pdo->createQuery($sql)->getResult();
 
 		Cache::resetRuntime();
@@ -77,7 +77,7 @@ class TableBase extends \Sexy\Expression {
 	}
 
 	public function delete() {
-		$sql = " DROP TABLE " . $this->name;
+		$sql = " DROP TABLE " . $this->name->name;
 		$res = $this->pdo->createQuery($sql)->getResult();
 
 		Cache::resetRuntime();

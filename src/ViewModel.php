@@ -2,39 +2,43 @@
 
 namespace Katu;
 
-class ViewModel extends ModelBase {
+class ViewModel extends ModelBase
+{
 
-	static $_cache              = true;
-	static $_cacheTimeout       = 86400;
-	static $_cacheOnUpdate      = true;
-	static $_cacheAdvance       = .75;
-	static $_materialize        = false;
-	static $_materializeTimeout = 86400;
-	static $_materializeAdvance = 1;
-	static $_materializeHours   = [];
 	static $_autoIndices        = true;
+	static $_cache              = true;
+	static $_cacheAdvance       = .75;
+	static $_cacheOnUpdate      = true;
+	static $_cacheTimeout       = 86400;
 	static $_compositeIndex     = true;
 	static $_customIndices      = [];
+	static $_materialize        = false;
+	static $_materializeAdvance = 1;
+	static $_materializeHours   = [];
+	static $_materializeTimeout = 86400;
 
-	static function getTable() {
+	public static function getTable()
+	{
 		static::cacheIfExpired();
 
 		return static::isCached() ? static::getCachedTable() : static::getView();
 	}
 
-	static function getTableName() {
+	public static function getTableName()
+	{
 		return static::isCached() ? static::getCachedTableName() : static::getViewName();
 	}
 
-	static function getView() {
+	public static function getView()
+	{
 		return new Pdo\View(static::getPdo(), static::getViewName());
 	}
 
-	static function getViewName() {
+	public static function getViewName() {
 		return static::TABLE;
 	}
 
-	static function getColumn($name, $options = []) {
+	public static function getColumn($name, $options = []) {
 		if (isset($options['cache']) && $options['cache'] === false) {
 			$table = static::getView();
 		} else {
@@ -44,7 +48,7 @@ class ViewModel extends ModelBase {
 		return new Pdo\Column($table, $name);
 	}
 
-	static function getViewColumn($name, $options = []) {
+	public static function getViewColumn($name, $options = []) {
 		$options['cache'] = false;
 
 		return static::getColumn($name, $options);
@@ -192,7 +196,8 @@ class ViewModel extends ModelBase {
 		]);
 	}
 
-	static function copy($sourceTable, $destinationTable) {
+	public static function copy($sourceTable, $destinationTable)
+	{
 		@set_time_limit(600);
 
 		// Get a temporary table.
@@ -206,23 +211,25 @@ class ViewModel extends ModelBase {
 			'compositeIndex' => static::$_compositeIndex,
 			'customIndices'  => static::$_customIndices,
 		];
+
+		// Copy tables.
 		$sourceTable->copy($temporaryTable, $params);
 
 		// Drop the original table.
 		try {
 			$destinationTable->delete();
+			// Rename the temporary table.
+			$temporaryTable->rename($destinationTable->name);
 		} catch (\Throwable $e) {
-			\Katu\ErrorHandler::log($e);
-			// Nevermind.
+			// There was an error, delete the temporary table.
+			$temporaryTable->delete();
 		}
-
-		// Rename the temporary table.
-		$temporaryTable->rename($destinationTable->name);
 
 		return true;
 	}
 
-	static function cache() {
+	public static function cache()
+	{
 		try {
 
 			$class = static::getClass();

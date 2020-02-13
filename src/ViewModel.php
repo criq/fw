@@ -212,6 +212,7 @@ class ViewModel extends ModelBase {
 		try {
 			$destinationTable->delete();
 		} catch (\Throwable $e) {
+			\Katu\ErrorHandler::log($e);
 			// Nevermind.
 		}
 

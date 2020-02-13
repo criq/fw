@@ -4,15 +4,17 @@ namespace Katu;
 
 use \Katu\App;
 
-class Controller {
+class Controller
+{
 
-	static $data = [];
+	public static $data = [];
 
-	static function init() {
+	public static function init() {
 		return true;
 	}
 
-	static function redirect($urls, $code = 302) {
+	public static function redirect($urls, $code = 302)
+	{
 		$app = App::get();
 
 		$urls = is_array($urls) ? $urls : [$urls];

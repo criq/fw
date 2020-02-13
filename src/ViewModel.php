@@ -211,8 +211,9 @@ class ViewModel extends ModelBase {
 		// Drop the original table.
 		try {
 			$destinationTable->delete();
-		} catch (\Exception $e) {
+		} catch (\Throwable $e) {
 			// Nevermind.
+			\Katu\ErrorHandler::log($e);
 		}
 
 		// Rename the temporary table.

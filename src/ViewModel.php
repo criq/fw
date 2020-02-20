@@ -4,18 +4,19 @@ namespace Katu;
 
 class ViewModel extends ModelBase
 {
+	const TABLE = null;
 
-	static $_autoIndices        = true;
-	static $_cache              = true;
-	static $_cacheAdvance       = .75;
-	static $_cacheOnUpdate      = true;
-	static $_cacheTimeout       = 86400;
-	static $_compositeIndex     = true;
-	static $_customIndices      = [];
-	static $_materialize        = false;
-	static $_materializeAdvance = 1;
-	static $_materializeHours   = [];
-	static $_materializeTimeout = 86400;
+	public static $_autoIndices        = true;
+	public static $_cache              = true;
+	public static $_cacheAdvance       = .75;
+	public static $_cacheOnUpdate      = true;
+	public static $_cacheTimeout       = 86400;
+	public static $_compositeIndex     = true;
+	public static $_customIndices      = [];
+	public static $_materialize        = false;
+	public static $_materializeAdvance = 1;
+	public static $_materializeHours   = [];
+	public static $_materializeTimeout = 86400;
 
 	public static function getTable()
 	{
@@ -34,11 +35,13 @@ class ViewModel extends ModelBase
 		return new Pdo\View(static::getPdo(), static::getViewName());
 	}
 
-	public static function getViewName() {
+	public static function getViewName()
+	{
 		return static::TABLE;
 	}
 
-	public static function getColumn($name, $options = []) {
+	public static function getColumn($name, $options = [])
+	{
 		if (isset($options['cache']) && $options['cache'] === false) {
 			$table = static::getView();
 		} else {
@@ -48,17 +51,20 @@ class ViewModel extends ModelBase
 		return new Pdo\Column($table, $name);
 	}
 
-	public static function getViewColumn($name, $options = []) {
+	public static function getViewColumn($name, $options = [])
+	{
 		$options['cache'] = false;
 
 		return static::getColumn($name, $options);
 	}
 
-	static function getCachedTable() {
+	public static function getCachedTable()
+	{
 		return new Pdo\Table(static::getPdo(), static::getCachedTableName());
 	}
 
-	static function getCachedTableName() {
+	public static function getCachedTableName()
+	{
 		$name = implode('_', [
 			'_cache',
 			static::getViewName(),
@@ -71,65 +77,71 @@ class ViewModel extends ModelBase
 		return $name;
 	}
 
-	static function getCachedTableCacheName() {
+	public static function getCachedTableCacheName()
+	{
 		return ['!databases', '!' . static::getView()->pdo->name, '!views', '!cachedView', '!' . static::TABLE];
 	}
 
-	static function isCached() {
+	public static function isCached()
+	{
 		return static::$_cache;
 	}
 
-	static function isMaterialized() {
+	public static function isMaterialized()
+	{
 		return static::$_materialize;
 	}
 
-	static function cachedTableExists() {
+	public static function cachedTableExists()
+	{
 		return in_array(static::getCachedTableName(), static::getPdo()->getTableNames());
 	}
 
-	static function materializedTableExists() {
+	public static function materializedTableExists()
+	{
 		return in_array(static::getMaterializedTableName(), static::getPdo()->getTableNames());
 	}
 
-	static function cacheHasUpdatedTables() {
+	public static function cacheHasUpdatedTables()
+	{
 		if (static::$_cacheOnUpdate) {
-
 			$sourceTables = static::getView()->getSourceTables();
 			foreach ($sourceTables as $sourceTable) {
-
 				if (!$sourceTable->exists()) {
 					continue;
 				}
-
 				$lastUpdatedTime = $sourceTable->getLastUpdatedTime();
 				if (!is_null($lastUpdatedTime) && $lastUpdatedTime > static::getLastCachedTime()) {
 					return true;
 				}
-
 			}
-
 		}
 
 		return false;
 	}
 
-	static function getCacheAge() {
+	public static function getCacheAge()
+	{
 		return time() - static::getLastCachedTime();
 	}
 
-	static function getMaterializeAge() {
+	public static function getMaterializeAge()
+	{
 		return time() - static::getLastMaterializedTime();
 	}
 
-	static function getCacheExpiryRatio() {
+	public static function getCacheExpiryRatio()
+	{
 		return static::getCacheAge() / static::$_cacheTimeout;
 	}
 
-	static function getMaterializeExpiryRatio() {
+	public static function getMaterializeExpiryRatio()
+	{
 		return static::getMaterializeAge() / static::$_materializeTimeout;
 	}
 
-	static function isCacheExpired($expiryRatio = 1) {
+	public static function isCacheExpired($expiryRatio = 1)
+	{
 		if (!static::isCached()) {
 			return false;
 		}
@@ -149,11 +161,13 @@ class ViewModel extends ModelBase
 		return false;
 	}
 
-	static function isCacheExpiredAdvance() {
+	public static function isCacheExpiredAdvance()
+	{
 		return static::isCacheExpired(static::$_cacheAdvance);
 	}
 
-	static function isMaterializeExpired($expiryRatio = 1) {
+	public static function isMaterializeExpired($expiryRatio = 1)
+	{
 		if (!static::isMaterialized()) {
 			return false;
 		}
@@ -169,11 +183,13 @@ class ViewModel extends ModelBase
 		return false;
 	}
 
-	static function isMaterializeExpiredAdvance($expiryRatio = 1) {
+	public static function isMaterializeExpiredAdvance($expiryRatio = 1)
+	{
 		return static::isMaterializeExpired(static::$_materializeAdvance);
 	}
 
-	static function isMaterializable() {
+	public static function isMaterializable()
+	{
 		if (!static::$_materializeHours || \Katu\Env::getPlatform() == 'dev') {
 			return true;
 		}
@@ -181,15 +197,18 @@ class ViewModel extends ModelBase
 		return in_array((int) (new \Katu\Utils\DateTime)->format('h'), static::$_materializeHours);
 	}
 
-	static function resetCache() {
+	public static function resetCache()
+	{
 		return \Katu\Utils\Cache::reset(static::getCachedTableCacheName());
 	}
 
-	static function getMaterializedTable() {
+	public static function getMaterializedTable()
+	{
 		return new Pdo\Table(static::getPdo(), static::getMaterializedTableName());
 	}
 
-	static function getMaterializedTableName() {
+	public static function getMaterializedTableName()
+	{
 		return implode('_', [
 			'mv',
 			preg_replace('#^view_#', null, static::getViewName()),
@@ -217,7 +236,9 @@ class ViewModel extends ModelBase
 
 		// Drop the original table.
 		try {
-			$destinationTable->delete();
+			if ($destinationTable->exists()) {
+				$destinationTable->delete();
+			}
 			// Rename the temporary table.
 			$temporaryTable->rename($destinationTable->name);
 		} catch (\Throwable $e) {
@@ -231,27 +252,24 @@ class ViewModel extends ModelBase
 	public static function cache()
 	{
 		try {
-
 			$class = static::getClass();
+			$class = '\\' . ltrim($class, '\\');
+			// var_dump($class);die;
 
-			#return \Katu\Utils\Lock::run(['databases', static::getPdo()->config->database, 'views', 'cache', static::TABLE], 600, function($class) {
+			$class::materializeSourceViews();
+			// var_dump($class::getView(), $class::getCachedTable());
 
-				$class::materializeSourceViews();
+			$class::copy($class::getView(), $class::getCachedTable());
+			$class::updateLastCachedTime();
 
-				$class = '\\' . ltrim($class, '\\');
-				$class::copy($class::getView(), $class::getCachedTable());
-				$class::updateLastCachedTime();
-
-				return true;
-
-			#}, $class);
-
+			return true;
 		} catch (\Katu\Exceptions\LockException $e) {
 			// Nevermind.
 		}
 	}
 
-	static function cacheIfExpired() {
+	public static function cacheIfExpired()
+	{
 		if (static::isCacheExpiredAdvance()) {
 			try {
 				return static::cache();
@@ -261,27 +279,24 @@ class ViewModel extends ModelBase
 		}
 	}
 
-	static function materialize() {
+	public static function materialize()
+	{
 		try {
-
-			return \Katu\Utils\Lock::run(['databases', static::getPdo()->config->database, 'views', 'materialize', static::TABLE], 600, function($class) {
-
+			return \Katu\Utils\Lock::run(['databases', static::getPdo()->config->database, 'views', 'materialize', static::TABLE], 600, function ($class) {
 				$class::materializeSourceViews();
-
 				$class = '\\' . ltrim($class, '\\');
 				$class::copy($class::getView(), $class::getMaterializedTable());
 				$class::updateLastMaterializedTime();
 
 				return true;
-
 			}, static::getClass());
-
 		} catch (\Katu\Exceptions\LockException $e) {
 			\Katu\ErrorHandler::log($e);
 		}
 	}
 
-	static function materializeIfExpired() {
+	public static function materializeIfExpired()
+	{
 		if (static::isMaterializeExpiredAdvance()) {
 			try {
 				return static::materialize();
@@ -291,44 +306,50 @@ class ViewModel extends ModelBase
 		}
 	}
 
-	static function materializeSourceViews() {
+	public static function materializeSourceViews()
+	{
 		foreach (static::getView()->getSourceViewsInMaterializedViews() as $view) {
 			foreach ($view->getModelNames() as $class) {
-
 				$class = '\\' . ltrim($class, '\\');
 				$class::materializeIfExpired();
-
 			}
 		}
 
 		return true;
 	}
 
-	static function getLastCachedTmpName() {
+	public static function getLastCachedTmpName()
+	{
 		return ['!databases', '!' . static::getPdo()->config->database, '!views', '!cached', '!' . static::TABLE];
 	}
 
-	static function updateLastCachedTime() {
+	public static function updateLastCachedTime()
+	{
 		return \Katu\Utils\Tmp::set(static::getLastCachedTmpName(), microtime(true));
 	}
 
-	static function getLastCachedTime() {
+	public static function getLastCachedTime()
+	{
 		return (float) \Katu\Utils\Tmp::get(static::getLastCachedTmpName());
 	}
 
-	static function getLastMaterializedTmpName() {
+	public static function getLastMaterializedTmpName()
+	{
 		return ['!databases', '!' . static::getPdo()->config->database, '!views', '!materialized', '!' . static::TABLE];
 	}
 
-	static function updateLastMaterializedTime() {
+	public static function updateLastMaterializedTime()
+	{
 		return (float) \Katu\Utils\Tmp::set(static::getLastMaterializedTmpName(), microtime(true));
 	}
 
-	static function getLastMaterializedTime() {
+	public static function getLastMaterializedTime()
+	{
 		return \Katu\Utils\Tmp::get(static::getLastMaterializedTmpName());
 	}
 
-	static function getAllViewModelNames($directories = []) {
+	public static function getAllViewModelNames($directories = [])
+	{
 		try {
 			$dir = (new \Katu\Utils\File('app', 'Models', 'Views'));
 			if ($dir->exists()) {
@@ -338,14 +359,14 @@ class ViewModel extends ModelBase
 			/* Nevermind. */
 		}
 
-		return array_values(array_filter(array_filter(get_declared_classes(), function($i) {
+		return array_values(array_filter(array_filter(get_declared_classes(), function ($i) {
 			return strpos($i, 'App\\Models\\Views\\') === 0;
 		})));
 	}
 
-	static function cacheAndMaterializeAll() {
+	public static function cacheAndMaterializeAll()
+	{
 		foreach (static::getAllViewModelNames() as $modelView) {
-
 			$class = '\\' . $modelView;
 
 			$class::cacheIfExpired();
@@ -353,8 +374,6 @@ class ViewModel extends ModelBase
 			if ($class::isMaterializable()) {
 				$class::materializeIfExpired();
 			}
-
 		}
 	}
-
 }

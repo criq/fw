@@ -48,6 +48,8 @@ class File {
 
 		$curl = new \Curl\Curl;
 		$curl->setOpt(CURLOPT_FOLLOWLOCATION, true);
+		$curl->setConnectTimeout(10);
+		$curl->setTimeout(10);
 
 		$src = $curl->get($url);
 

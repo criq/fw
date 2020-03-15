@@ -2,17 +2,17 @@
 
 namespace Katu\Models;
 
-use \Katu\Exception;
-
-class Geocode extends \Katu\Model {
-
+class Geocode extends \Katu\Model
+{
 	const TABLE = 'geocodes';
 
-	static function make($language, $address, $components = [], $extra = []) {
+	public static function make($language, $address, $components = [], $extra = [])
+	{
 		return static::getOrCreateFromAddress(call_user_func_array('\Katu\Utils\Google\Geocode::geocode', [$language, $address, $components]), $extra);
 	}
 
-	static function getOrCreateFromAddress($geocodeAddress, $extra = []) {
+	public static function getOrCreateFromAddress($geocodeAddress, $extra = [])
+	{
 		if (!$geocodeAddress || !($geocodeAddress instanceof \Katu\Utils\Google\GeocodeAddress)) {
 			throw new \Katu\Exceptions\InputErrorException("Invalid geocode address.");
 		}
@@ -23,7 +23,6 @@ class Geocode extends \Katu\Model {
 			'hash' => $hash,
 		]);
 		if (!$geocode) {
-
 			$params = [
 				'timeCreated'  => (string) \Katu\Utils\DateTime::get()->getDbDateTimeFormat(),
 				'hash'         => (string) $hash,
@@ -48,13 +47,13 @@ class Geocode extends \Katu\Model {
 			$params = array_merge($params, $extra);
 
 			$geocode = static::insert($params);
-
 		}
 
 		return $geocode;
 	}
 
-	static function getHashByGeocodeAddress($geocodeAddress, $extra = []) {
+	public static function getHashByGeocodeAddress($geocodeAddress, $extra = [])
+	{
 		if (!$geocodeAddress || !($geocodeAddress instanceof \Katu\Utils\Google\GeocodeAddress)) {
 			throw new \Exception("Invalid geocode address.");
 		}
@@ -81,14 +80,15 @@ class Geocode extends \Katu\Model {
 		return static::getHashByArray($params);
 	}
 
-	static function getHashByArray($array) {
+	public static function getHashByArray($array)
+	{
 		ksort($array);
 
 		return sha1(json_encode($array));
 	}
 
-	public function hasPropertyAddress() {
+	public function hasPropertyAddress()
+	{
 		return ($this->number || $this->premise || $this->street);
 	}
-
 }

@@ -5,7 +5,6 @@ namespace Katu\Models;
 class UserPasswordToken extends \Katu\Model
 {
 	const TABLE = 'user_password_tokens';
-
 	const EXPIRES = '1 hour';
 
 	public static function create($user)

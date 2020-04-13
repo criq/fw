@@ -2,23 +2,26 @@
 
 namespace Katu;
 
-class Session {
-
+class Session
+{
 	const KEY = 'katu.session';
 
-	static function getPath() {
+	public static function getPath()
+	{
 		return new Utils\File(TMP_PATH, 'session');
 	}
 
-	static function makePath() {
+	public static function makePath()
+	{
 		try {
 			return static::getPath()->makeDir();
 		} catch (\Exception $e) {
-
+			// Nevermind.
 		}
 	}
 
-	static function start() {
+	public static function start()
+	{
 		if (!session_id()) {
 			static::makePath();
 			session_save_path(static::getPath());
@@ -26,20 +29,22 @@ class Session {
 		}
 	}
 
-	static function init() {
+	public static function init()
+	{
 		if (!session_id()) {
 			static::setCookieParams();
 			static::start();
 		}
 
 		if (!isset($_SESSION[static::KEY])) {
-			$_SESSION[static::KEY] = array();
+			$_SESSION[static::KEY] = [];
 		}
 
 		return true;
 	}
 
-	static function get($key = null) {
+	public static function get($key = null)
+	{
 		static::init();
 
 		if (!$key) {
@@ -53,7 +58,8 @@ class Session {
 		return $_SESSION[static::KEY][$key];
 	}
 
-	static function set() {
+	public static function set()
+	{
 		static::init();
 
 		$_SESSION[static::KEY][func_get_arg(0)] = func_get_arg(1);
@@ -61,7 +67,8 @@ class Session {
 		return true;
 	}
 
-	static function add($key, $value, $instance = null) {
+	public static function add($key, $value, $instance = null)
+	{
 		static::init();
 
 		if ($value) {
@@ -75,7 +82,8 @@ class Session {
 		return true;
 	}
 
-	static function reset() {
+	public static function reset()
+	{
 		static::init();
 
 		if (func_get_args()) {
@@ -89,16 +97,16 @@ class Session {
 		return true;
 	}
 
-	static function setCookieParams($config = array()) {
+	public static function setCookieParams($config = [])
+	{
 		try {
 			$config = \Katu\Config::getApp('cookie');
 		} catch (\Exception $e) {
-			$config = array();
+			$config = [];
 		}
 
 		$config = array_merge(Cookie::getDefaultConfig(), $config);
 
-		return session_set_cookie_params($config['lifetime'], $config['path'], $config['domain'], $config['secure'], $config['httponly']);
+		return @session_set_cookie_params($config['lifetime'], $config['path'], $config['domain'], $config['secure'], $config['httponly']);
 	}
-
 }

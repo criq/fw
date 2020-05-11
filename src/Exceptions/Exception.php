@@ -2,33 +2,38 @@
 
 namespace Katu\Exceptions;
 
-class Exception extends \Exception {
-
+class Exception extends \Exception
+{
 	private $errorNames = [];
 	private $abbr;
 	private $translations;
 
-	public function __construct($message = null, $code = 0, $previous = null) {
+	public function __construct($message = null, $code = 0, $previous = null)
+	{
 		parent::__construct($message, $code, $previous);
 
 		$this->translations = new \Katu\Types\TLocaleStrings;
 	}
 
-	public function __toString() {
+	public function __toString()
+	{
 		return (string) $this->getTranslatedMessage();
 	}
 
-	public function setAbbr($abbr) {
+	public function setAbbr($abbr)
+	{
 		$this->abbr = trim($abbr);
 
 		return $this;
 	}
 
-	public function getAbbr() {
+	public function getAbbr()
+	{
 		return $this->abbr;
 	}
 
-	public function addErrorName($errorName) {
+	public function addErrorName($errorName)
+	{
 		$this->errorNames[] = static::getErrorName($errorName);
 
 		$this->maintainErrorNames();
@@ -36,15 +41,18 @@ class Exception extends \Exception {
 		return $this;
 	}
 
-	static function getErrorName($errorName) {
+	public static function getErrorName($errorName)
+	{
 		return implode('.', array_filter((array) $errorName));
 	}
 
-	public function getErrorNameIndex($errorName) {
+	public function getErrorNameIndex($errorName)
+	{
 		return array_search(static::getErrorName($errorName), $this->errorNames);
 	}
 
-	public function replaceErrorName($errorName, $replacement) {
+	public function replaceErrorName($errorName, $replacement)
+	{
 		$index = $this->getErrorNameIndex($errorName);
 		if ($index !== false && isset($this->errorNames[$index])) {
 			$this->errorNames[$index] = static::getErrorName($replacement);
@@ -55,17 +63,20 @@ class Exception extends \Exception {
 		return $this;
 	}
 
-	private function maintainErrorNames() {
+	private function maintainErrorNames()
+	{
 		$this->errorNames = array_values(array_unique(array_filter($this->errorNames)));
 
 		return $this;
 	}
 
-	public function getErrorNames() {
+	public function getErrorNames()
+	{
 		return $this->errorNames;
 	}
 
-	public function addTranslation($locale, $message) {
+	public function addTranslation($locale, $message)
+	{
 		if (is_string($locale)) {
 			$locale = new \Katu\Types\TLocale($locale);
 		}
@@ -75,7 +86,8 @@ class Exception extends \Exception {
 		return $this;
 	}
 
-	public function getTranslatedMessage() {
+	public function getTranslatedMessage()
+	{
 		$translation = $this->translations->getPreferredString();
 		if ($translation) {
 			return $translation;
@@ -83,5 +95,4 @@ class Exception extends \Exception {
 
 		return $this->getMessage();
 	}
-
 }

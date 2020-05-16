@@ -4,12 +4,13 @@ namespace Katu;
 
 use \Katu\Utils\Cache;
 
-class Config {
-
-	static function get() {
+class Config
+{
+	public static function get()
+	{
 		$args = func_get_args();
 
-		return Cache::getRuntime(array_merge(['config'], $args), function() use($args) {
+		return Cache::getRuntime(array_merge(['config'], $args), function () use ($args) {
 			try {
 				return call_user_func_array([new \Katu\Types\TArray(self::getAll()), 'getValueByArgs'], $args);
 			} catch (\Katu\Exceptions\MissingArrayKeyException $e) {
@@ -18,9 +19,9 @@ class Config {
 		});
 	}
 
-	static function getAll() {
-		return Cache::getRuntime('config', function() {
-
+	public static function getAll()
+	{
+		return Cache::getRuntime('config', function () {
 			$config = [];
 			foreach (self::getFiles() as $file) {
 				$pathinfo = pathinfo($file);
@@ -35,11 +36,11 @@ class Config {
 			}
 
 			return $config;
-
 		});
 	}
 
-	static function getFiles() {
+	public static function getFiles()
+	{
 		$dir = BASE_DIR . '/app/Config';
 		$files = [];
 
@@ -52,12 +53,13 @@ class Config {
 		return $files;
 	}
 
-	static function getApp() {
+	public static function getApp()
+	{
 		return call_user_func_array(['self', 'get'], array_merge(['app'], func_get_args()));
 	}
 
-	static function getDb() {
+	public static function getDb()
+	{
 		return call_user_func_array(['self', 'get'], array_merge(['db'], func_get_args()));
 	}
-
 }

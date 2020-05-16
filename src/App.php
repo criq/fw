@@ -2,25 +2,30 @@
 
 namespace Katu;
 
-class App {
-
-	static function getExtendedClass($appClassName, $fallbackName) {
+class App
+{
+	public static function getExtendedClass($appClassName, $fallbackName)
+	{
 		return class_exists($appClassName) ? $appClassName : $fallbackName;
 	}
 
-	static function getControllerClass() {
+	public static function getControllerClass()
+	{
 		return static::getExtendedClass('\\App\\Extensions\\Controller', '\\Katu\\Controller');
 	}
 
-	static function getViewClass() {
+	public static function getViewClass()
+	{
 		return static::getExtendedClass('\\App\\Extensions\\View', '\\Katu\\View');
 	}
 
-	static function getErrorHandlerClass() {
+	public static function getErrorHandlerClass()
+	{
 		return static::getExtendedClass('\\App\\Extensions\\ErrorHandler', '\\Katu\\ErrorHandler');
 	}
 
-	static function init() {
+	public static function init()
+	{
 		// Constants.
 		if (!defined('BASE_DIR')) {
 			define('BASE_DIR', realpath(__DIR__ . '/../../../../'));
@@ -57,20 +62,24 @@ class App {
 		return true;
 	}
 
-	static function isDev() {
+	public static function isDev()
+	{
 		return Config::get('app', 'slim', 'mode') == 'development';
 	}
 
-	static function isTest() {
+	public static function isTest()
+	{
 		return Config::get('app', 'slim', 'mode') == 'testing';
 	}
 
-	static function isProd() {
+	public static function isProd()
+	{
 		return Config::get('app', 'slim', 'mode') == 'production';
 	}
 
-	static function isProfilerOn() {
-		return \Katu\Utils\Cache::getRuntime('profiler.on', function() {
+	public static function isProfilerOn()
+	{
+		return \Katu\Utils\Cache::getRuntime('profiler.on', function () {
 			try {
 				return \Katu\Config::get('app', 'profiler');
 			} catch (\Katu\Exceptions\MissingConfigException $e) {
@@ -79,10 +88,10 @@ class App {
 		});
 	}
 
-	static function get() {
+	public static function get()
+	{
 		$app = \Slim\Slim::getInstance();
 		if (!$app) {
-
 			self::init();
 
 			try {
@@ -110,13 +119,13 @@ class App {
 			// Default content-type header for debugging, will be probably overwritten by app.
 			header('Content-Type: text/html; charset=UTF-8');
 			$app->response->headers->set('Content-Type', 'text/html; charset=UTF-8');
-
 		}
 
 		return $app;
 	}
 
-	static function getPdo($name = null) {
+	public static function getPdo($name = null)
+	{
 		$names = array_keys(Config::getDb());
 
 		if ($name) {
@@ -134,7 +143,8 @@ class App {
 		return Pdo\Connection::getInstance($names[0]);
 	}
 
-	static function run() {
+	public static function run()
+	{
 		self::init();
 
 		$app = self::get();
@@ -142,7 +152,6 @@ class App {
 		// Redirect to canonical host.
 		try {
 			if ($app->request->getMethod() == 'GET' && Config::get('app', 'redirectToCanonicalHost')) {
-
 				$currentUrl = Utils\Url::getCurrent();
 				$currentHost = $currentUrl->getHost();
 				$currentScheme = $currentUrl->getScheme();
@@ -157,7 +166,7 @@ class App {
 					$canonicalParts['host'] = $canonicalHost;
 					$redirectUrl = Types\TUrl::build($canonicalParts);
 
-					return header('Location: ' . (string) $redirectUrl, 301); die;
+					return header('Location: ' . (string) $redirectUrl, 301);
 				}
 			}
 		} catch (\Katu\Exceptions\MissingConfigException $e) {
@@ -165,7 +174,7 @@ class App {
 		}
 
 		// Catch all.
-		$catchAll = function() {
+		$catchAll = function () {
 
 			$app = self::get();
 
@@ -182,18 +191,14 @@ class App {
 					throw new Exceptions\ControllerMethodNotFoundException("Invalid controller method.");
 				}
 			}
-
 		};
 
 		try {
-
 			$app = self::get();
 
 			try {
-
 				// Set up routes.
 				foreach ((array) Config::get('routes') as $name => $route) {
-
 					$pattern  = $route->getPattern();
 					$callable = $route->getCallable();
 
@@ -211,9 +216,7 @@ class App {
 					} elseif ($route->name) {
 						$slimRoute->name($route->name);
 					}
-
 				}
-
 			} catch (Exceptions\RouteException $e) {
 				throw $e;
 			} catch (\Exception $e) {
@@ -232,9 +235,8 @@ class App {
 
 			// Run the app.
 			$app->run();
-
-		} catch (\Exception $e) { throw $e; }
-
+		} catch (\Exception $e) {
+			throw $e;
+		}
 	}
-
 }

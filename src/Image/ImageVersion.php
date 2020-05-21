@@ -2,17 +2,19 @@
 
 namespace Katu\Image;
 
-class ImageVersion {
-
+class ImageVersion
+{
 	protected $image;
 	protected $version;
 
-	public function __construct(\Katu\Image $image, \Katu\Image\Version $version) {
+	public function __construct(\Katu\Image $image, \Katu\Image\Version $version)
+	{
 		$this->image = $image;
 		$this->version = $version;
 	}
 
-	public function __toString() {
+	public function __toString()
+	{
 		if ($this->image->getSource() instanceof \Katu\Image\Sources\File) {
 			return (string)\Katu\Utils\Url::getFor('images.getVersionSrc.file', [
 				'fileId' => $this->image->getSource()->getInput()->getId(),
@@ -20,7 +22,6 @@ class ImageVersion {
 				'version' => $this->version->getName(),
 				'name' => $this->image->getSource()->getInput()->name,
 			]);
-
 		} elseif ($this->image->getSource() instanceof \Katu\Image\Sources\Url) {
 			return (string)\Katu\Utils\Url::getFor('images.getVersionSrc.url', [
 				'version' => $this->version->getName(),
@@ -32,11 +33,13 @@ class ImageVersion {
 		return '';
 	}
 
-	public function getExtension() {
+	public function getExtension()
+	{
 		return $this->version->getExtension() ?: $this->image->getSource()->getExtension();
 	}
 
-	public function getFile() {
+	public function getFile()
+	{
 		$pathSegments = [];
 
 		$hash = $this->image->getSource()->getHash();
@@ -48,11 +51,10 @@ class ImageVersion {
 		return new \Katu\Utils\File($this->version->getDir(), implode('/', $pathSegments));
 	}
 
-	public function getImage() {
+	public function getImage()
+	{
 		try {
-
 			if (!$this->getFile()->exists()) {
-
 				$interventionImage = $this->image->getInterventionImage();
 				foreach ($this->version->getFilters() as $filter) {
 					$filter->apply($interventionImage);
@@ -61,15 +63,12 @@ class ImageVersion {
 				$this->getFile()->getDir()->makeDir();
 
 				$interventionImage->save($this->getFile(), $this->version->getQuality());
-
 			}
 
 			return new \Katu\Image($this->getFile());
-
 		} catch (\Exception $e) {
 			\App\Extensions\ErrorHandler::log($e);
 			return false;
 		}
 	}
-
 }

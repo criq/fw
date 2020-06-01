@@ -34,4 +34,9 @@ class Pickle
 	{
 		return $this->getFile()->set(serialize($value));
 	}
+
+	public function delete()
+	{
+		return $this->getFile()->delete();
+	}
 }

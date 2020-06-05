@@ -2,36 +2,41 @@
 
 namespace Katu\Utils;
 
-class File {
-
+class File
+{
 	public $path;
 
 	const TYPE_FILE = 'file';
 	const TYPE_DIR  = 'dir';
 
-	public function __construct() {
+	public function __construct()
+	{
 		$this->path = call_user_func_array(['\Katu\Utils\FileSystem', 'joinPaths'], func_get_args());
 
 		return $this;
 	}
 
-	public function __toString() {
+	public function __toString()
+	{
 		return $this->getPath();
 	}
 
-	static function createTemporaryWithFileName($fileName) {
+	public static function createTemporaryWithFileName($fileName)
+	{
 		$file = new static(TMP_PATH, 'files', $fileName);
 
 		return $file;
 	}
 
-	static function createTemporaryWithExtension($extension) {
+	public static function createTemporaryWithExtension($extension)
+	{
 		$file = new static(TMP_PATH, 'files', [\Katu\Utils\Random::getFileName(), $extension]);
 
 		return $file;
 	}
 
-	static function createTemporaryFromSrc($src, $extension) {
+	public static function createTemporaryFromSrc($src, $extension)
+	{
 		if ($extension) {
 			$file = static::createTemporaryWithExtension($extension);
 		} else {
@@ -43,7 +48,8 @@ class File {
 		return $file;
 	}
 
-	static function createTemporaryFromUrl($url, $extension = null) {
+	public static function createTemporaryFromUrl($url, $extension = null)
+	{
 		$url = new \Katu\Types\TUrl($url);
 
 		$curl = new \Curl\Curl;
@@ -63,7 +69,8 @@ class File {
 		return static::createTemporaryFromSrc($src, $extension);
 	}
 
-	public function getPath() {
+	public function getPath()
+	{
 		if (file_exists($this->path)) {
 			return realpath($this->path);
 		}
@@ -76,7 +83,8 @@ class File {
 		return $this->path;
 	}
 
-	public function getUrl() {
+	public function getUrl()
+	{
 		try {
 			$publicRoot = \Katu\Config::get('app', 'publicRoot');
 		} catch (\Katu\Exceptions\MissingConfigException $e) {
@@ -85,7 +93,7 @@ class File {
 
 		$publicPath = realpath(new \Katu\Utils\File(BASE_DIR, $publicRoot));
 		if (preg_match('#^' . $publicPath . '(.*)$#', $this->getPath(), $match)) {
-			return new \Katu\Types\TUrl(implode('/', array_map(function($i) {
+			return new \Katu\Types\TUrl(implode('/', array_map(function ($i) {
 				return trim($i, '/');
 			}, [
 				\Katu\Config::get('app', 'baseUrl'),
@@ -96,11 +104,13 @@ class File {
 		return null;
 	}
 
-	public function exists() {
+	public function exists()
+	{
 		return file_exists($this->getPath());
 	}
 
-	public function get() {
+	public function get()
+	{
 		try {
 			return file_get_contents($this);
 		} catch (\Exception $e) {
@@ -109,7 +119,8 @@ class File {
 		}
 	}
 
-	public function getLines() {
+	public function getLines()
+	{
 		try {
 			return file($this);
 		} catch (\Exception $e) {
@@ -118,7 +129,8 @@ class File {
 		}
 	}
 
-	public function set($data) {
+	public function set($data)
+	{
 		try {
 			$this->getDir()->makeDir();
 			return file_put_contents($this, $data, LOCK_EX);
@@ -128,11 +140,13 @@ class File {
 		}
 	}
 
-	public function append($data) {
+	public function append($data)
+	{
 		return file_put_contents($this, $data, LOCK_EX | FILE_APPEND);
 	}
 
-	public function getType() {
+	public function getType()
+	{
 		clearstatcache();
 
 		if (!$this->exists()) {

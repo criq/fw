@@ -31,6 +31,19 @@ class FileSize
 		return $this->inMB() / 1024;
 	}
 
+	public function getReadable()
+	{
+		if ($this->size < 1024) {
+			return $this->size . ' B';
+		} elseif ($this->inKB() < 1024) {
+			return round($this->inKB()) . ' kB';
+		} elseif ($this->inMB() < 1024) {
+			return round($this->inMB(), 1) . ' MB';
+		} else {
+			return round($this->inGB(), 2) . ' GB';
+		}
+	}
+
 	public static function createFromIni($string)
 	{
 		if (preg_match('#([0-9]+)M#', $string, $match)) {

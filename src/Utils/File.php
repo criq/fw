@@ -323,16 +323,17 @@ class File
 		}
 	}
 
-	public function includeOnce() {
+	public function includeOnce()
+	{
 		return include_once $this;
 	}
 
-	public function includeAllPhpFiles() {
-		return $this->eachRecursive(function($i) {
+	public function includeAllPhpFiles()
+	{
+		return $this->eachRecursive(function ($i) {
 			if ($i->isPhpFile()) {
 				$i->includeOnce();
 			}
 		});
 	}
-
 }

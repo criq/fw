@@ -118,6 +118,11 @@ class File extends \Katu\Model
 		return $this->name;
 	}
 
+	public function getPathinfo()
+	{
+		return pathinfo($this->name);
+	}
+
 	public static function generatePath($srcName = null)
 	{
 		while (true) {

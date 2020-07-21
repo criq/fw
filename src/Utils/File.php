@@ -133,6 +133,7 @@ class File
 	{
 		try {
 			$this->getDir()->makeDir();
+			$this->touch();
 			return file_put_contents($this, $data, LOCK_EX);
 		} catch (\Exception $e) {
 			\Katu\ErrorHandler::log($e);

@@ -41,6 +41,14 @@ class DateTime extends \DateTime
 		}
 	}
 
+	public function change($change)
+	{
+		$datetime = clone $this;
+		$datetime->modify($change);
+
+		return $datetime;
+	}
+
 	public function toLocalTimezone()
 	{
 		return $this->setTimezone(new \DateTimeZone(\Katu\Config::get('app', 'timezone')));

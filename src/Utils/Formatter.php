@@ -30,9 +30,15 @@ class Formatter
 		return $numberFormatter->format($number);
 	}
 
-	public static function getLocalFormNumber($locale, $number)
+	public static function getLocalFormNumber($locale, $number, $decimals = 2)
 	{
-		return preg_replace('/\s/u', null, static::getLocalNumber($locale, $number));
+		$numberFormatter = new \NumberFormatter(static::getPreferredLocale($locale), \NumberFormatter::DECIMAL);
+		$numberFormatter->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
+
+		$res = $numberFormatter->format($number);
+		$res = preg_replace('/\s/u', null, $res);
+
+		return $res;
 	}
 
 	public static function getLocalReadableNumber($locale, $number, $digits = null)

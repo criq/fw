@@ -203,9 +203,10 @@ class File extends \Katu\Model
 	public static function getSupportedImageTypes()
 	{
 		return [
+			'image/gif',
 			'image/jpeg',
 			'image/png',
-			'image/gif',
+			'image/webp',
 		];
 	}
 

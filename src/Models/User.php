@@ -92,6 +92,8 @@ class User extends \Katu\Model
 
 	public static function getByAccessToken($token)
 	{
+		$token = preg_replace('/^Bearer\s+/', null, $token);
+
 		$accessTokenClass = static::getAccessTokenClass();
 
 		$accessToken = $accessTokenClass::getOneBy([

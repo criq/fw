@@ -203,6 +203,11 @@ class User extends \Katu\Model
 		return true;
 	}
 
+	public function getName()
+	{
+		return $this->name;
+	}
+
 	public function login()
 	{
 		\Katu\Session::set('katu.user.id', (int)$this->getId());

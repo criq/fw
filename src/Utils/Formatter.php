@@ -25,43 +25,55 @@ class Formatter
 
 	public static function getLocalNumber($locale, $number)
 	{
-		$numberFormatter = new \NumberFormatter(static::getPreferredLocale($locale), \NumberFormatter::DECIMAL);
+		try {
+			$numberFormatter = new \NumberFormatter(static::getPreferredLocale($locale), \NumberFormatter::DECIMAL);
 
-		return $numberFormatter->format($number);
+			return $numberFormatter->format($number);
+		} catch (\Throwable $e) {
+			return $number;
+		}
 	}
 
 	public static function getLocalFormNumber($locale, $number, $decimals = 2)
 	{
-		$numberFormatter = new \NumberFormatter(static::getPreferredLocale($locale), \NumberFormatter::DECIMAL);
-		$numberFormatter->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
+		try {
+			$numberFormatter = new \NumberFormatter(static::getPreferredLocale($locale), \NumberFormatter::DECIMAL);
+			$numberFormatter->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
 
-		$res = $numberFormatter->format($number);
-		$res = preg_replace('/\s/u', null, $res);
+			$res = $numberFormatter->format($number);
+			$res = preg_replace('/\s/u', null, $res);
 
-		return $res;
+			return $res;
+		} catch (\Throwable $e) {
+			return $number;
+		}
 	}
 
 	public static function getLocalReadableNumber($locale, $number, $digits = null)
 	{
-		$numberFormatter = new \NumberFormatter(static::getPreferredLocale($locale), \NumberFormatter::DECIMAL);
-		$numberFormatter->setAttribute(\NumberFormatter::DECIMAL_ALWAYS_SHOWN, false);
+		try {
+			$numberFormatter = new \NumberFormatter(static::getPreferredLocale($locale), \NumberFormatter::DECIMAL);
+			$numberFormatter->setAttribute(\NumberFormatter::DECIMAL_ALWAYS_SHOWN, false);
 
-		if ($digits !== null) {
-			$numberFormatter->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, $digits);
-		} else {
-			$numberFormatter->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 3);
-			if ($number >= 1) {
-				$numberFormatter->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 2);
+			if ($digits !== null) {
+				$numberFormatter->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, $digits);
+			} else {
+				$numberFormatter->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 3);
+				if ($number >= 1) {
+					$numberFormatter->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 2);
+				}
+				if ($number >= 10) {
+					$numberFormatter->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 1);
+				}
+				if ($number >= 100) {
+					$numberFormatter->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 0);
+				}
 			}
-			if ($number >= 10) {
-				$numberFormatter->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 1);
-			}
-			if ($number >= 100) {
-				$numberFormatter->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 0);
-			}
+
+			return $numberFormatter->format($number);
+		} catch (\Throwable $e) {
+			return $number;
 		}
-
-		return $numberFormatter->format($number);
 	}
 
 	public static function getLocalPercent($locale, $number)

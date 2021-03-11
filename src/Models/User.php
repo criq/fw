@@ -358,22 +358,9 @@ class User extends \Katu\Model
 		});
 	}
 
-	public function hasPermission()
+	public function hasPermission($permission)
 	{
-		$args = func_get_args();
-		$permissions = is_string($args[0]) ? [$args[0]] : $args[0];
-		$any = isset($args[1]) ? $args[1] : false;
-
-		$status = [];
-		foreach ((array)$permissions as $permission) {
-			$status[$permission] = in_array($permission, $this->getAllPermissions());
-		}
-
-		if ($any) {
-			return in_array(true, $status);
-		}
-
-		return !in_array(false, $status);
+		return in_array($permission, $this->getAllPermissions());
 	}
 
 	public function hasRolePermission($permission)

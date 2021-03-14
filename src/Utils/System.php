@@ -64,9 +64,10 @@ class System
 			if ($key > 0) {
 				$array = preg_split('/\t/', $row);
 				$res[trim($array[0])] = [
+					'filesystem' => trim($array[0]),
+					'mount' => trim($array[5]),
 					'capacity' => new FileSize((int)trim($array[1]) * 1024),
 					'used' => new FileSize((int)trim($array[2]) * 1024),
-					'mount' => $array[5],
 				];
 			}
 		}

@@ -68,6 +68,7 @@ class System
 					'mount' => trim($array[5]),
 					'capacity' => new FileSize((int)trim($array[1]) * 1024),
 					'used' => new FileSize((int)trim($array[2]) * 1024),
+					'free' => new FileSize(((int)trim($array[1]) * 1024) - ((int)trim($array[2]) * 1024)),
 				];
 			}
 		}

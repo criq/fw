@@ -18,7 +18,7 @@ class TUrl
 			throw new \Exception("Invalid URL '" . $value . "'.");
 		}
 
-		$this->value = (string) (trim($value));
+		$this->value = (string)trim($value);
 	}
 
 	public function __toString()

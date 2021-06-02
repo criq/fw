@@ -4,7 +4,6 @@ namespace Katu\Types;
 
 class TUrl
 {
-
 	const DEFAULT_SCHEME = 'http';
 
 	public $value;
